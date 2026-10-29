@@ -39,7 +39,7 @@ Goal: **reference scenario runs end-to-end from the CLI** with one engine.
 Goal: **persona P1 completes the workflow in the browser**.
 
 - Fastify API + SSE, job scheduling.
-- Web UI: project wizard (AOI draw/import, dates), data discovery view (tracks, timeline, estimate, warnings),
+- Web UI: project wizard with the **in-app map selector** (click a polygon or drag a rectangle on the map, edit vertices, live area; FR-AOI-01) and file import, dates, data discovery view (tracks, timeline, estimate, warnings),
   schema-generated parameter forms with presets, job monitor with logs, result viewer (map + time series + filters + QA layers), export dialog.
 - **→ MVP release (v0.1)** after acceptance tests AT-01…AT-08, AT-10…AT-14.
 

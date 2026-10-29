@@ -60,7 +60,9 @@ These documents are the input for design and implementation. **Baseline approved
 | 2026-09-27 | Production machine: Ryzen 7 3700X, 32 GB RAM, 1 TB SSD, RTX 3080 Ti | Q-19 |
 | 2026-09-27 | **PSInSAR and SBAS** with open-source software: SBAS engine (MintPy) added; MATLAB never mandatory | Q-21 |
 | 2026-09-27 | Spike S-1 results: own verified download layer, per-date streaming coregistration, SBAS interferograms from the cropped stack, command-by-command execution of ISCE2 run files | S-1 |
+| 2026-09-27 | AOI selection both by file upload and by an **in-app map selector** (click/drag on the map), detailed in FR-AOI-01 for Phase 2 | PO |
 | 2026-09-27 | Spikes S-2, S-3 (pre-MATLAB), S-5, S-6, S-7 done; findings applied (FR-AOI-06 → Must, SBAS defaults, split viewer data, StaMPS patch set, installer design). Open: S-3 MATLAB run, S-2 GPU, S-4 on the production machine | S-2…S-7 |
+| 2026-09-28 | Increment 4: coregistration streams per date with the common valid region seeded from the reference (FR-PRE-12); stage outputs record their own files relative to the manifest; every stage records its tool versions | Inc. 4 |
 
 ## Conventions
 

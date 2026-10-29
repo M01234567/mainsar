@@ -4,7 +4,7 @@
 
 | ID | Source | Data | Access | Credentials | Notes |
 |----|--------|------|--------|-------------|-------|
-| DR-01 | **ASF DAAC** (asf_search API) | Sentinel-1 IW SLC scenes and **SLC burst** products, metadata | HTTPS (search API + download) | NASA **Earthdata Login** (free) | Burst products are extracted on demand from full SLCs `[VERIFY S-1: throughput, limits]`. Primary source. |
+| DR-01 | **ASF DAAC** (asf_search API) | Sentinel-1 IW SLC scenes and **SLC burst** products, metadata | HTTPS (search API + download) | Search: none; download: NASA **Earthdata Login** (free) | Burst products are extracted on demand from full SLCs (S-1: slow, timeouts). Primary source. asf_search silently simplifies complex search polygons (~40 m tolerance), so MainSAR searches with the AOI's bounding box and filters exactly itself (Phase 1, increment 2). Downloads: OAuth redirect flow with `~/.netrc`; the burst extractor answers `202 Accepted` while preparing a file and supports HTTP Range (increment 3). |
 | DR-02 | **Copernicus Data Space Ecosystem (CDSE)** | Sentinel-1 SLC (fallback), metadata | OData/STAC API, S3 | CDSE account (free) | Fallback when ASF is unavailable; no burst extraction `[VERIFY]` |
 | DR-03 | **Precise orbits** (POEORB/RESORB) | Orbit state vectors | via ASF orbit bucket or CDSE (e.g. `sentineleof`) | depends on source `[VERIFY]` | POEORB available ~20 days after acquisition |
 | DR-04 | **Copernicus DEM GLO-30** | 30 m DSM, EGM2008 heights | AWS Open Data (public S3, no auth) | none | Needs geoid→ellipsoid conversion for ISCE2 |
@@ -144,6 +144,13 @@ COG (rasters), Zarr/NetCDF (displacement cube) (ADR-007). Defined as JSON Schema
 | `inc_angle` | float32 | deg | Incidence angle |
 | `D_YYYYMMDD` … | float32 | mm | Cumulative displacement per date |
 | `model_*` | float32 | varies | Optional model parameters (seasonal amplitude, …) |
+
+**Implementation (increments 5–6).** The engine writes the result in the radar grid of the crop
+(`schemas/engine-result.schema.json`: displacement cube, coherence, D_A, point type); the engine-independent
+`timeseries` stage references it, removes the DEM error and adds velocity, its standard deviation, DEM error and
+height (`schemas/timeseries-result.schema.json`); the `export` stage selects and geocodes the points and writes the
+table above as GeoParquet (internal), GeoPackage and CSV, plus COGs, KMZ, the metadata sidecar and the viewer data
+(`viewer/points.arrow` attributes + `viewer/timeseries.bin` float32 points × dates for Range requests, spike S-5).
 
 ## 5. Storage layout (DR-42)
 

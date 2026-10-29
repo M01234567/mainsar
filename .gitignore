@@ -34,3 +34,22 @@ spikes/s5-ui/viewer/dist/
 spikes/s5-ui/viewer/public/data
 *.log
 spikes/s5-ui/viewer/perf/screenshot_*.png
+
+# Build output and environments of the product
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Test reports
+test-results/
+
+# Local end-to-end runs
+.e2e/
+
+# Bundled self-test data (small, deliberately versioned; FR-INS-06)
+!testdata/**

@@ -162,12 +162,12 @@ Installation and operation are specified in [14](14_installation_and_operations.
 
 | Layer | Choice | Alternatives considered | Reason |
 |-------|--------|-------------------------|--------|
-| Application language | **TypeScript** (strict), Node.js LTS | Go, Kotlin, Python | Team preference; types shared between backend and frontend (Q-17) |
+| Application language | **TypeScript 5** (strict), Node.js 24 LTS from the pixi environment | Go, Kotlin, Python; TypeScript 7 | Team preference (Q-17); TS 5 until typescript-eslint supports the TS 7 compiler |
 | HTTP framework | **Fastify** + SSE | Express, NestJS, Hono | Fast, schema-first (JSON Schema native), low overhead |
 | Schemas / validation | **JSON Schema** as source; Ajv (TS), pydantic (Py) generated | Zod-first, TypeBox-first | Language-neutral source of truth (§2.3) |
-| State DB | **SQLite** (better-sqlite3) + Kysely or Drizzle (typed SQL) | PostgreSQL | Single user, zero ops, transactional |
+| State DB | **SQLite via Node's built-in `node:sqlite`**, plain prepared statements, migrations via `user_version` | better-sqlite3 + Kysely/Drizzle, PostgreSQL | Single user, zero ops; no native add-on to compile at install time (decided in Phase 1, increment 1) |
 | Job scheduling | In-process scheduler in core + child processes | BullMQ/Redis, Temporal | One machine, one user: no broker needed |
-| CLI | commander / oclif | – | Same core as the API |
+| CLI | Node's built-in `util.parseArgs` | commander, oclif | Same core as the API; no extra dependency for a small command set |
 | Frontend | **React + TypeScript + Vite**, MapLibre GL, **deck.gl** (WebGL points), Plotly.js, react-jsonschema-form | Vue/Svelte; OpenLayers/Leaflet | deck.gl renders ≥ 1 M points; form generation from JSON Schema |
 | Result data in browser | Points: GeoParquet/Arrow via loaders.gl or parquet-wasm; rasters: COG read client-side (geotiff.js / deck.gl) | Tile server (TiTiler) | AOIs ≤ 100 km² make client-side rendering feasible; no extra Python server |
 | Worker language | **Python 3.12** (pinned) | – | Only language with the needed InSAR libraries |

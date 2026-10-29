@@ -20,7 +20,8 @@ Columns: **Level** = *B*asic (always shown), *A*dvanced (expert mode). **Stage**
 | `polarisation` | A | VV | VV, VH, HH, HV | VV recommended for PS |
 | `exclude_dates` | A | [] | list of dates | Manually excluded acquisitions |
 | `exclude_months` | A | [] | 1–12 | Rule-based exclusion (e.g. snow) |
-| `min_acquisitions` | A | 20 | 10–1000 | Warning threshold (FR-DIS-04) |
+| `min_acquisitions` | A | 20 | 2–1000 | Warning threshold (FR-DIS-04) |
+| `max_gap_days` | A | 48 | 1–1000 | Largest gap between usable dates before a warning (FR-DIS-04) |
 
 ## 2. Acquisition
 
@@ -50,7 +51,8 @@ Columns: **Level** = *B*asic (always shown), *A*dvanced (expert mode). **Stage**
 
 ## 4. Engine "PSDS" (Dolphin)
 
-Parameter names follow Dolphin's configuration `[VERIFY names/defaults with pinned version, S-2]`.
+MainSAR's names (block `dolphin` in `project.yaml`, schema `schemas/dolphin-parameters.schema.json`), mapped to
+Dolphin 0.42 by the adapter (increment 5; defaults verified in spike S-2).
 
 | Parameter | Level | Default | Range / options | Description |
 |-----------|:-----:|---------|-----------------|-------------|
@@ -60,13 +62,13 @@ Parameter names follow Dolphin's configuration `[VERIFY names/defaults with pinn
 | `phase_linking.shp_method` | A | glrt | glrt, ks, rect | SHP test |
 | `phase_linking.shp_alpha` | A | 0.005 | 0.001–0.1 | Significance level of the SHP test |
 | `phase_linking.use_evd` | A | false | bool | EVD instead of EMI |
-| `interferogram_network` | A | single-reference | single-reference, nearest-N, max-bandwidth | Network for unwrapping |
-| `unwrap.method` | B | snaphu | snaphu, spurt, phass, icu | Phase unwrapping algorithm |
+| `network_bandwidth` | A | 3 | 1–10 | Unwrapping network: each date paired with its N following dates (nearest-N; 1 = sequential). Nearest-3 as verified in S-2: the redundancy lets the L1 inversion reject unwrapping errors (OQ-1) |
+| `unwrap_method` | B | snaphu | snaphu (spurt, phass, icu once their packages are in the environment) | Phase unwrapping algorithm |
 | `unwrap.ntiles` | A | auto | 1×1 … 8×8 | Tiling for SNAPHU (memory) |
 | `unwrap.cost` | A | smooth | smooth, defo | SNAPHU statistical cost mode |
 | `timeseries.method` | A | L1 | L1, L2 | Network inversion norm |
 | `output.coherence_threshold` | B | 0.7 | 0.3–0.99 | Minimum temporal coherence for exported points |
-| `worker.block_shape` | A | auto | px | Block size for memory control (derived from RAM limit) |
+| `worker.block_shape` | A | auto | px | Block size for memory control, derived from the memory budget: 1 GB base + block² × N² × 8 B × 50 (N = ministack + compressed SLCs); calibrated on S-2, recalibrated in S-4 |
 | `worker.threads_per_worker` | A | auto | 1–N | |
 | `worker.gpu_enabled` | A | auto (on if a CUDA GPU is detected) | auto, true, false | GPU acceleration for Dolphin (RTX 3080 Ti on HW-PROD) |
 
